@@ -1,55 +1,44 @@
 # STYX
 
-**Truthful membership for distributed systems.**
+truthful membership for distributed systems
 
-Not logs. Not heartbeats. Not guesses.  
-**Honesty.**
+not logs. not heartbeats. not guesses.
+honesty.
 
----
+## what it is
 
-## What STYX Is
+styx is a distributed membership system that refuses to lie.
 
-STYX is a distributed membership system that **refuses to lie**.
+it answers one question: who is alive and how sure are we
 
-It answers one question:
+most systems answer this with timeouts heartbeats gossip and boolean flags. all of those lie under load partitions and reality.
 
-> **Who is alive — and how sure are we?**
+styx does not.
 
-Most systems answer this with timeouts, heartbeats, gossip, boolean flags.  
-**All of those lie** under load, partitions, and reality.
+if styx is unsure it says unknown.
+if styx declares death its irreversible.
+if styx cant answer honestly it refuses to answer.
 
-STYX does not.
+## what it is not
 
-- If STYX is unsure, it says `"unknown"`
-- If STYX declares death, it is **irreversible**
-- If STYX cannot answer honestly, it **refuses to answer**
+not a monitoring tool
+not a heartbeat service
+not raft or paxos or quorum based
+not fast
+not convenient
 
----
+styx optimizes for truth not usability.
 
-## What STYX Is NOT
+## core principles
 
-- ❌ Not a monitoring tool
-- ❌ Not a heartbeat service
-- ❌ Not Raft / Paxos / quorum-based
-- ❌ Not fast
-- ❌ Not convenient
+uncertainty is first class
+false death is worse then delayed death
+silence is better then lies
+disagreement is preserved
+time is not trusted
+death is irreversible
 
-STYX optimizes for **truth**, not usability.
-
----
-
-## Core Principles
-
-1. **Uncertainty is first-class**
-2. **False death is worse than delayed death**
-3. **Silence is better than lies**
-4. **Disagreement is preserved**
-5. **Time is not trusted**
-6. **Death is irreversible**
-
----
-
-## API Shape
+## api shape
 
 ```json
 {
@@ -58,64 +47,42 @@ STYX optimizes for **truth**, not usability.
   "dead_confidence": 0.19,
   "unknown": 0.20,
   "evidence": [
-    "causal message observed via node-Y",
+    "causal message observed via node Y",
     "network instability detected",
     "observer disagreement present"
   ]
 }
 ```
 
-There is **no** `isAlive(node) -> true/false`.
+there is no isAlive(node) returning true or false.
 
----
+## implementation status
 
-## Implementation Status
+phase 1 foundation done
+phase 2 single observer done
+phase 3 to 8 coming
 
-### Phase 1: Foundation ✓
-- [x] NodeID with generation (restart ≠ resurrection)
-- [x] Confidence values with bounds enforcement
-- [x] Belief distributions (alive + dead + unknown = 1)
-- [x] Logical timestamps (no wall clocks)
-- [x] Evidence types with weights
-- [x] EvidenceSet with belief computation
+## properties that must hold
 
-### Phase 2: Single Observer (In Progress)
-- [ ] Probing mechanism
-- [ ] Response entropy measurement
+| num | property | status |
+|-----|----------|--------|
+| 1 | identity uniqueness | done |
+| 3 | restart not equals resurrection | done |
+| 4 | no evidence means no conclusion | done |
+| 5 | evidence is monotonic | done |
+| 6 | load not equals failure | done |
+| 7 | belief is never binary | done |
+| 8 | unknown always allowed | done |
+| 9 | conflict widens belief | done |
+| 15 | silence not equals death | done |
+| 18 | confidence sums to 1 | done |
 
-### Phase 3-8: Future
-- Witness diversity
-- Finality engine
-- Refusal mode
-- API contract
-
----
-
-## Properties (Must Hold)
-
-| # | Property | Status |
-|---|----------|--------|
-| 1 | Identity uniqueness | ✓ |
-| 3 | Restart ≠ resurrection | ✓ |
-| 4 | No evidence → no conclusion | ✓ |
-| 5 | Evidence is monotonic | ✓ |
-| 6 | Load ≠ failure | ✓ |
-| 7 | Belief is never binary | ✓ |
-| 8 | Unknown always allowed | ✓ |
-| 9 | Conflict widens belief | ✓ |
-| 15 | Silence ≠ death | ✓ |
-| 18 | Confidence sums to 1 | ✓ |
-
----
-
-## Run Tests
+## run tests
 
 ```bash
 go test ./... -v
 ```
 
----
-
-## License
+## license
 
 MIT
