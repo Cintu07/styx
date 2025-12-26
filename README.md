@@ -38,29 +38,47 @@ disagreement is preserved
 time is not trusted
 death is irreversible
 
+## packages
+
+| package | what it does |
+|---------|--------------|
+| types | nodeid confidence belief |
+| time | logical timestamps |
+| evidence | evidence types and aggregation |
+| state | local belief state machine |
+| observer | single observer probing with jitter |
+| witness | multi witness aggregation and trust |
+| finality | irreversible death declaration |
+| partition | network split detection |
+| oracle | main api that ties it all together |
+
 ## api shape
 
-```json
-{
-  "node": "X",
-  "alive_confidence": 0.61,
-  "dead_confidence": 0.19,
-  "unknown": 0.20,
-  "evidence": [
-    "causal message observed via node Y",
-    "network instability detected",
-    "observer disagreement present"
-  ]
-}
+```go
+result := oracle.Query(targetNode)
+
+// result contains:
+// - Belief (alive/dead/unknown distribution)
+// - Refused (bool - true if oracle cant answer honestly)
+// - RefusalReason (string)
+// - Dead (bool - true if finality declared)
+// - WitnessCount
+// - Disagreement
+// - PartitionState
+// - Evidence (list of reasons)
 ```
 
 there is no isAlive(node) returning true or false.
 
 ## implementation status
 
-phase 1 foundation done
-phase 2 single observer done
-phase 3 to 8 coming
+all phases done:
+- phase 1: foundation (types beliefs evidence)
+- phase 2: single observer (jitter tracking)
+- phase 3: multi witness (trust decay disagreement)
+- phase 4: finality engine (irreversible death)
+- phase 5: partition awareness (split reality)
+- phase 6: oracle api (main interface)
 
 ## properties that must hold
 
@@ -74,6 +92,11 @@ phase 3 to 8 coming
 | 7 | belief is never binary | done |
 | 8 | unknown always allowed | done |
 | 9 | conflict widens belief | done |
+| 10 | disagreement preserved | done |
+| 11 | correlated witnesses weaken confidence | done |
+| 12 | witness trust decays | done |
+| 13 | false death forbidden | done |
+| 14 | finality irreversible | done |
 | 15 | silence not equals death | done |
 | 18 | confidence sums to 1 | done |
 
