@@ -1,9 +1,22 @@
-# STYX
+<p align="center">
+  <img src="assets/banner.png" alt="STYX Banner" width="100%">
+</p>
 
-truthful membership for distributed systems
+<p align="center">
+  <img src="assets/logo.png" alt="STYX Logo" width="200">
+</p>
 
-not logs. not heartbeats. not guesses.
-honesty.
+<h1 align="center">STYX</h1>
+
+<p align="center">
+  <strong>truthful membership for distributed systems</strong>
+</p>
+
+<p align="center">
+  not logs. not heartbeats. not guesses. honesty.
+</p>
+
+---
 
 ## what it is
 
@@ -18,6 +31,49 @@ styx does not.
 if styx is unsure it says unknown.
 if styx declares death its irreversible.
 if styx cant answer honestly it refuses to answer.
+
+## architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         STYX ORACLE                             │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │                      HTTP API                             │   │
+│  │   /query   /report   /health   /witnesses                │   │
+│  └──────────────────────────────────────────────────────────┘   │
+│                              │                                   │
+│  ┌───────────────────────────┴───────────────────────────┐      │
+│  │                    ORACLE CORE                         │      │
+│  │  - Query with confidence requirements                  │      │
+│  │  - Refusal mode when uncertain                        │      │
+│  │  - Integrates all subsystems                          │      │
+│  └───────────────────────────────────────────────────────┘      │
+│           │              │              │              │         │
+│  ┌────────┴───┐  ┌───────┴───┐  ┌───────┴───┐  ┌───────┴───┐   │
+│  │  OBSERVER  │  │  WITNESS  │  │ FINALITY  │  │ PARTITION │   │
+│  │            │  │           │  │           │  │           │   │
+│  │ - Probing  │  │ - Trust   │  │ - Death   │  │ - Split   │   │
+│  │ - Jitter   │  │ - Decay   │  │ - P13/14  │  │ - Refuse  │   │
+│  │ - Entropy  │  │ - P10/11  │  │ - P15     │  │           │   │
+│  └────────────┘  └───────────┘  └───────────┘  └───────────┘   │
+│                              │                                   │
+│  ┌───────────────────────────┴───────────────────────────┐      │
+│  │                    FOUNDATION                          │      │
+│  │  types: NodeID, Confidence, Belief                    │      │
+│  │  time: LogicalTimestamp                               │      │
+│  │  evidence: Evidence, EvidenceSet                      │      │
+│  │  state: LocalBelief, ObserverState                    │      │
+│  └───────────────────────────────────────────────────────┘      │
+└─────────────────────────────────────────────────────────────────┘
+
+                    BELIEF DISTRIBUTION
+                    ┌─────────────────┐
+                    │  alive: 0.61   │
+                    │  dead:  0.19   │
+                    │  unknown: 0.20 │
+                    └─────────────────┘
+                    (always sums to 1.0)
+```
 
 ## what it is not
 
@@ -51,6 +107,23 @@ death is irreversible
 | finality | irreversible death declaration |
 | partition | network split detection |
 | oracle | main api that ties it all together |
+| api | http server |
+| chaos | stress tests |
+
+## quick start
+
+```bash
+# run server
+go run cmd/styx-server/main.go
+
+# query a node
+curl "http://localhost:8080/query?target=42"
+
+# submit witness report
+curl -X POST http://localhost:8080/report \
+  -H "Content-Type: application/json" \
+  -d '{"witness": 10, "target": 42, "alive": 0.8, "dead": 0.1, "unknown": 0.1}'
+```
 
 ## api shape
 
@@ -79,6 +152,7 @@ all phases done:
 - phase 4: finality engine (irreversible death)
 - phase 5: partition awareness (split reality)
 - phase 6: oracle api (main interface)
+- chaos testing: all 8 stress tests passed
 
 ## properties that must hold
 
@@ -103,7 +177,11 @@ all phases done:
 ## run tests
 
 ```bash
+# all tests
 go test ./... -v
+
+# chaos tests
+go test ./chaos/... -v
 ```
 
 ## license
