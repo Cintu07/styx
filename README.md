@@ -3,16 +3,11 @@
 </p>
 
 <p align="center">
-  <img src="assets/logo.png" alt="STYX Logo" width="200">
-</p>
-
-<h1 align="center">STYX</h1>
-
-<p align="center">
-  <strong>truthful membership for distributed systems</strong>
+  <img src="assets/logo.png" alt="STYX" width="80">
 </p>
 
 <p align="center">
+  <strong>truthful membership for distributed systems</strong><br>
   not logs. not heartbeats. not guesses. honesty.
 </p>
 
