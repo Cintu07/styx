@@ -55,8 +55,16 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/report", s.handleReport)
 	mux.HandleFunc("/health", s.handleHealth)
 	mux.HandleFunc("/witnesses", s.handleWitnesses)
+	mux.HandleFunc("/metrics", s.handleMetrics)
 
 	return mux
+}
+
+func (s *Server) handleMetrics(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; version=0.0.4")
+	w.Write([]byte("# HELP styx_up STYX server is up\n"))
+	w.Write([]byte("# TYPE styx_up gauge\n"))
+	w.Write([]byte("styx_up 1\n"))
 }
 
 func (s *Server) handleQuery(w http.ResponseWriter, r *http.Request) {
