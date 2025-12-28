@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package styx;
+
+option go_package = "github.com/styx-oracle/styx/proto";
+
+// Belief represents the probability distribution over node states
+message Belief {
+  double alive = 1;
+  double dead = 2;
+  double unknown = 3;
+}
+
+// QueryRequest asks about a node's status
+message QueryRequest {
+  uint64 target = 1;
+}
+
+// QueryResponse returns the full belief and metadata
+message QueryResponse {
+  uint64 target = 1;
+  Belief belief = 2;
+  bool refused = 3;
+  string refusal_reason = 4;
+  bool dead = 5;
+  int32 witness_count = 6;
+  double disagreement = 7;
+  string partition_state = 8;
+  repeated string evidence = 9;
+}
+
+// ReportRequest submits a witness report
+message ReportRequest {
+  uint64 witness = 1;
+  uint64 target = 2;
+  Belief belief = 3;
+}
+
+// ReportResponse confirms the report was received
+message ReportResponse {
+  bool accepted = 1;
+}
+
+// HealthRequest checks server health
+message HealthRequest {}
+
+// HealthResponse returns health status
+message HealthResponse {
+  bool healthy = 1;
+  string service = 2;
+}
+
+// StyxOracle is the main gRPC service
+service StyxOracle {
+  // Query asks about a node's liveness belief
+  rpc Query(QueryRequest) returns (QueryResponse);
+  
+  // Report submits a witness observation
+  rpc Report(ReportRequest) returns (ReportResponse);
+  
+  // Health checks server status
+  rpc Health(HealthRequest) returns (HealthResponse);
+  
+  // StreamBeliefs streams belief updates for a target
+  rpc StreamBeliefs(QueryRequest) returns (stream QueryResponse);
+}

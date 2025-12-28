@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STYX Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 20px 40px;
+            border-bottom: 1px solid #2a2a4a;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .header span {
+            color: #7c3aed;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+            border: 1px solid #2a2a4a;
+            border-radius: 12px;
+            padding: 24px;
+        }
+        
+        .stat-card h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .stat-card.green .value { color: #10b981; }
+        .stat-card.red .value { color: #ef4444; }
+        .stat-card.yellow .value { color: #f59e0b; }
+        .stat-card.purple .value { color: #7c3aed; }
+        
+        .nodes-section {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+            border: 1px solid #2a2a4a;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+        
+        .nodes-section h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .node-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        
+        .node-card {
+            background: #0f0f1a;
+            border: 1px solid #2a2a4a;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        
+        .node-card .node-id {
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+        
+        .belief-bar {
+            height: 8px;
+            background: #1a1a2e;
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            margin-bottom: 8px;
+        }
+        
+        .belief-bar .alive {
+            background: #10b981;
+        }
+        
+        .belief-bar .dead {
+            background: #ef4444;
+        }
+        
+        .belief-bar .unknown {
+            background: #6b7280;
+        }
+        
+        .belief-values {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .belief-values span.green { color: #10b981; }
+        .belief-values span.red { color: #ef4444; }
+        .belief-values span.gray { color: #6b7280; }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+        
+        .status-badge.alive { background: #10b98120; color: #10b981; }
+        .status-badge.dead { background: #ef444420; color: #ef4444; }
+        .status-badge.unknown { background: #6b728020; color: #6b7280; }
+        .status-badge.refused { background: #f59e0b20; color: #f59e0b; }
+        
+        .refresh-btn {
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .refresh-btn:hover {
+            background: #6d28d9;
+        }
+        
+        #server-input {
+            background: #0f0f1a;
+            border: 1px solid #2a2a4a;
+            color: #fff;
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-right: 10px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><span>STYX</span> Dashboard</h1>
+    </div>
+    
+    <div class="container">
+        <div style="margin-bottom: 20px;">
+            <input type="text" id="server-input" placeholder="Server URL (default: http://localhost:8080)" />
+            <button class="refresh-btn" onclick="refresh()">Refresh</button>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card green">
+                <h3>Alive Nodes</h3>
+                <div class="value" id="alive-count">-</div>
+            </div>
+            <div class="stat-card red">
+                <h3>Dead Nodes</h3>
+                <div class="value" id="dead-count">-</div>
+            </div>
+            <div class="stat-card yellow">
+                <h3>Unknown</h3>
+                <div class="value" id="unknown-count">-</div>
+            </div>
+            <div class="stat-card purple">
+                <h3>Witnesses</h3>
+                <div class="value" id="witness-count">-</div>
+            </div>
+        </div>
+        
+        <div class="nodes-section">
+            <h2>Node Status</h2>
+            <div class="node-grid" id="node-grid">
+                <div class="node-card">
+                    <div class="node-id">No data - click Refresh</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const defaultServer = 'http://localhost:8080';
+        
+        async function refresh() {
+            const serverInput = document.getElementById('server-input');
+            const server = serverInput.value || defaultServer;
+            
+            // Demo: query nodes 1-10
+            const nodes = [];
+            for (let i = 1; i <= 10; i++) {
+                try {
+                    const resp = await fetch(`${server}/query?target=${i}`);
+                    const data = await resp.json();
+                    nodes.push({ id: i, ...data });
+                } catch (e) {
+                    nodes.push({ id: i, error: true });
+                }
+            }
+            
+            renderNodes(nodes);
+        }
+        
+        function renderNodes(nodes) {
+            const grid = document.getElementById('node-grid');
+            let aliveCount = 0;
+            let deadCount = 0;
+            let unknownCount = 0;
+            
+            grid.innerHTML = nodes.map(node => {
+                if (node.error) {
+                    return `<div class="node-card"><div class="node-id">Node ${node.id}</div><span class="status-badge unknown">ERROR</span></div>`;
+                }
+                
+                const alive = (node.alive_confidence * 100).toFixed(0);
+                const dead = (node.dead_confidence * 100).toFixed(0);
+                const unknown = (node.unknown * 100).toFixed(0);
+                
+                let status = 'unknown';
+                if (node.refused) status = 'refused';
+                else if (node.dead) { status = 'dead'; deadCount++; }
+                else if (node.alive_confidence > 0.5) { status = 'alive'; aliveCount++; }
+                else if (node.dead_confidence > 0.5) { status = 'dead'; deadCount++; }
+                else { unknownCount++; }
+                
+                return `
+                    <div class="node-card">
+                        <div class="node-id">Node ${node.id}</div>
+                        <div class="belief-bar">
+                            <div class="alive" style="width: ${alive}%"></div>
+                            <div class="dead" style="width: ${dead}%"></div>
+                            <div class="unknown" style="width: ${unknown}%"></div>
+                        </div>
+                        <div class="belief-values">
+                            <span class="green">A: ${alive}%</span>
+                            <span class="red">D: ${dead}%</span>
+                            <span class="gray">U: ${unknown}%</span>
+                        </div>
+                        <span class="status-badge ${status}">${status}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('alive-count').textContent = aliveCount;
+            document.getElementById('dead-count').textContent = deadCount;
+            document.getElementById('unknown-count').textContent = unknownCount;
+            document.getElementById('witness-count').textContent = '-';
+        }
+    </script>
+</body>
+</html>

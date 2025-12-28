@@ -1,0 +1,35 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+
+    - name: Build binaries
+      run: |
+        GOOS=linux GOARCH=amd64 go build -o styx-linux-amd64 ./cmd/styx-server
+        GOOS=darwin GOARCH=amd64 go build -o styx-darwin-amd64 ./cmd/styx-server
+        GOOS=darwin GOARCH=arm64 go build -o styx-darwin-arm64 ./cmd/styx-server
+        GOOS=windows GOARCH=amd64 go build -o styx-windows-amd64.exe ./cmd/styx-server
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          styx-linux-amd64
+          styx-darwin-amd64
+          styx-darwin-arm64
+          styx-windows-amd64.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
