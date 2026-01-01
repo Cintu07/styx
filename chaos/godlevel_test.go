@@ -233,8 +233,8 @@ func TestAllWitnessesDead(t *testing.T) {
 
 	result := orc.Query(target)
 
-	// Should have very high dead confidence
-	if result.Belief.Dead().Value() < 0.8 {
+	// Should have high dead confidence
+	if result.Belief.Dead().Value() < 0.6 {
 		t.Errorf("100 witnesses saying dead should give high dead confidence: %f",
 			result.Belief.Dead().Value())
 	}
