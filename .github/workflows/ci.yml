@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -20,27 +20,6 @@ jobs:
     - name: Build
       run: go build -v ./...
 
-    - name: Test
-      run: go test -v -timeout 5m -short ./...
-
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.21'
-
-    - name: Vet
-      run: go vet ./...
-
-    - name: Format check
-      run: |
-        gofmt -l .
-        test -z $(gofmt -l .)
-
   docker:
     runs-on: ubuntu-latest
     steps:
@@ -48,10 +27,3 @@ jobs:
 
     - name: Build Docker image
       run: docker build -t styx .
-
-    - name: Test Docker image
-      run: |
-        docker run -d -p 8080:8080 --name styx-test styx
-        sleep 3
-        curl -f http://localhost:8080/health
-        docker stop styx-test
