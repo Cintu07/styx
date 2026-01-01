@@ -203,5 +203,5 @@ func (p *Predictor) detectDegradationPattern(h *NodeHistory) bool {
 	oldAvg := p.recentAverage(h.ResponseTimes[:len(h.ResponseTimes)/2], 10)
 	newAvg := p.recentAverage(h.ResponseTimes, 10)
 
-	return newAvg > oldAvg*1.5
+	return newAvg > time.Duration(float64(oldAvg)*1.5)
 }
