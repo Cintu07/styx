@@ -1,35 +1,36 @@
 # STYX
 
-truthful membership for distributed systems.
+distributed membership that doesnt lie
 
 ---
 
-## what it is
+## what is this
 
-styx is a distributed membership system that refuses to lie.
+basically a system that tells you if nodes are alive or dead but it doesnt just say true or false like every other system does
 
-most systems answer "is this node alive" with timeouts, heartbeats, or gossip. all of those lie under load, partitions, and reality.
+the problem with normal health checks is they lie. if the network is slow they say the node is dead when its actually fine. this causes alot of problems
 
-styx does not.
+styx returns probabilities instead. like alive 61%, dead 19%, unknown 20%. if it doesnt know it says unknown instead of guessing wrong
 
-- if styx is unsure, it says unknown
-- if styx declares death, its irreversible
-- if styx cant answer honestly, it refuses to answer
+## why i built this
 
-## what it is not
+was frustrated with how membership systems handle uncertainty. they pretend to know things they dont know. kept seeing cascading failures because a slow node got marked dead
 
-- not a monitoring tool
-- not a heartbeat service
-- not raft, paxos, or quorum based
-- not fast
-- not convenient
+so i built this. took a few weeks. still some rough edges but it works
 
-styx optimizes for truth, not usability.
+## how to use
 
-## how it works
+run the server:
+```bash
+go run cmd/styx-server/main.go
+```
 
-instead of returning `isAlive = true/false`, styx returns a belief distribution:
+query a node:
+```bash
+curl "http://localhost:8080/query?target=42"
+```
 
+you get back something like:
 ```json
 {
   "alive_confidence": 0.61,
@@ -38,48 +39,56 @@ instead of returning `isAlive = true/false`, styx returns a belief distribution:
 }
 ```
 
-the three values always sum to 1.0.
-
-## quick start
-
+submit witness report:
 ```bash
-# run server
-go run cmd/styx-server/main.go
-
-# query a node
-curl "http://localhost:8080/query?target=42"
-
-# submit witness report  
 curl -X POST http://localhost:8080/report \
   -d '{"witness":10,"target":42,"alive":0.8,"dead":0.1,"unknown":0.1}'
 ```
 
-## packages
+## docker
 
-| package | purpose |
-|---------|---------|
-| types | nodeid, confidence, belief |
-| time | logical timestamps |
-| evidence | evidence types and aggregation |
-| observer | single observer with jitter tracking |
-| witness | multi witness with trust decay |
-| finality | irreversible death declaration |
-| partition | network split detection |
-| oracle | main api |
+```bash
+docker pull pawan126/styx
+docker run -p 8080:8080 pawan126/styx
+```
+
+or build yourself:
+```bash
+docker build -t styx .
+docker run -p 8080:8080 styx
+```
+
+## cli
+
+```bash
+go install github.com/Cintu07/styx/cmd/styx@latest
+styx query 42
+styx health
+```
+
+## main ideas
+
+- if unsure, say unknown (dont guess)
+- death is permanent, cant be undone
+- multiple witnesses needed for death
+- partitioned? refuse to answer
+- timeout alone is not enough evidence
+
+## whats in here
+
+| folder | what it does |
+|--------|--------------|
+| types | basic types like nodeid and belief |
+| oracle | main api that you use |
 | api | http server |
-
-## properties
-
-| property | description |
-|----------|-------------|
-| P1 | identity uniqueness |
-| P3 | restart does not equal resurrection |
-| P6 | load does not equal failure |
-| P7 | belief is never binary |
-| P9 | conflict widens belief |
-| P13 | false death forbidden |
-| P14 | finality irreversible |
-| P15 | silence does not equal death |
+| witness | tracks witness trust |
+| finality | handles death declaration |
+| partition | detects network splits |
+| prediction | tries to predict failures (experimental) |
+| byzantine | crypto signatures for bad actors |
+| economics | staking system (experimental) |
+| k8s | kubernetes manifests |
+| dashboard | web ui (basic) |
 
 ## run tests
 
@@ -87,18 +96,9 @@ curl -X POST http://localhost:8080/report \
 go test ./... -v
 ```
 
-## docker
-
-```bash
-docker build -t styx .
-docker run -p 8080:8080 styx
-```
-
----
-
 ## license
 
-[MIT](LICENSE)
+MIT - do whatever you want
 
 ---
 
