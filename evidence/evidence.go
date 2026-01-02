@@ -7,8 +7,8 @@ package evidence
 import (
 	"fmt"
 
-	styxtime "github.com/styx-oracle/styx/time"
-	"github.com/styx-oracle/styx/types"
+	styxtime "github.com/Cintu07/styx/time"
+	"github.com/Cintu07/styx/types"
 )
 
 // EventID is a unique identifier for a causal event.

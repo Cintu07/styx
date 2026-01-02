@@ -4,10 +4,10 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/styx-oracle/styx/finality"
-	"github.com/styx-oracle/styx/partition"
-	"github.com/styx-oracle/styx/types"
-	"github.com/styx-oracle/styx/witness"
+	"github.com/Cintu07/styx/finality"
+	"github.com/Cintu07/styx/partition"
+	"github.com/Cintu07/styx/types"
+	"github.com/Cintu07/styx/witness"
 )
 
 // Errors

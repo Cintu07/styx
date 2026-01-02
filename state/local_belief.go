@@ -4,9 +4,9 @@ package state
 import (
 	"fmt"
 
-	"github.com/styx-oracle/styx/evidence"
-	styxtime "github.com/styx-oracle/styx/time"
-	"github.com/styx-oracle/styx/types"
+	"github.com/Cintu07/styx/evidence"
+	styxtime "github.com/Cintu07/styx/time"
+	"github.com/Cintu07/styx/types"
 )
 
 // LocalBelief represents what a single observer believes about a target node.

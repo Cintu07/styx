@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/styx-oracle/styx/api"
+	"github.com/Cintu07/styx/api"
 )
 
 func main() {

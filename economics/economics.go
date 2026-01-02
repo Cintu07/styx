@@ -3,7 +3,7 @@ package economics
 import (
 	"sync"
 
-	"github.com/styx-oracle/styx/types"
+	"github.com/Cintu07/styx/types"
 )
 
 // Stake represents tokens locked by a witness

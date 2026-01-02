@@ -3,7 +3,7 @@ package witness
 import (
 	"math"
 
-	"github.com/styx-oracle/styx/types"
+	"github.com/Cintu07/styx/types"
 )
 
 // WitnessReport is a belief report from a single witness

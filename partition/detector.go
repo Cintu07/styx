@@ -3,8 +3,8 @@ package partition
 import (
 	"sync"
 
-	"github.com/styx-oracle/styx/types"
-	"github.com/styx-oracle/styx/witness"
+	"github.com/Cintu07/styx/types"
+	"github.com/Cintu07/styx/witness"
 )
 
 // PartitionState represents what we know about network partitions

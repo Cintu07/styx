@@ -4,8 +4,8 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/styx-oracle/styx/types"
-	"github.com/styx-oracle/styx/witness"
+	"github.com/Cintu07/styx/types"
+	"github.com/Cintu07/styx/witness"
 )
 
 // Errors

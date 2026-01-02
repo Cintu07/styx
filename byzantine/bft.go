@@ -5,7 +5,7 @@ import (
 	"crypto/rand"
 	"sync"
 
-	"github.com/styx-oracle/styx/types"
+	"github.com/Cintu07/styx/types"
 )
 
 // MaxByzantine is the maximum fraction of malicious nodes we can tolerate

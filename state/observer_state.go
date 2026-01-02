@@ -3,9 +3,9 @@ package state
 import (
 	"fmt"
 
-	"github.com/styx-oracle/styx/evidence"
-	styxtime "github.com/styx-oracle/styx/time"
-	"github.com/styx-oracle/styx/types"
+	"github.com/Cintu07/styx/evidence"
+	styxtime "github.com/Cintu07/styx/time"
+	"github.com/Cintu07/styx/types"
 )
 
 // ObserverState is the complete local state of a single observer node.

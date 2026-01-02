@@ -3,7 +3,7 @@ package witness
 import (
 	"sync"
 
-	"github.com/styx-oracle/styx/types"
+	"github.com/Cintu07/styx/types"
 )
 
 // TrustScore represents how much we trust a witness [0,1]

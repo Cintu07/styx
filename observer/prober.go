@@ -5,10 +5,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/styx-oracle/styx/evidence"
-	"github.com/styx-oracle/styx/state"
-	styxtime "github.com/styx-oracle/styx/time"
-	"github.com/styx-oracle/styx/types"
+	"github.com/Cintu07/styx/evidence"
+	"github.com/Cintu07/styx/state"
+	styxtime "github.com/Cintu07/styx/time"
+	"github.com/Cintu07/styx/types"
 )
 
 // ProbeResult represents the outcome of a probe.

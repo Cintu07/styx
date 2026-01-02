@@ -3,8 +3,8 @@ package evidence
 import (
 	"math"
 
-	styxtime "github.com/styx-oracle/styx/time"
-	"github.com/styx-oracle/styx/types"
+	styxtime "github.com/Cintu07/styx/time"
+	"github.com/Cintu07/styx/types"
 )
 
 // DefaultHalfLife for evidence decay (in logical time units).

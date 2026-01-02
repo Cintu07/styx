@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/styx-oracle/styx/oracle"
-	"github.com/styx-oracle/styx/types"
+	"github.com/Cintu07/styx/oracle"
+	"github.com/Cintu07/styx/types"
 )
 
 // Server provides HTTP API for STYX Oracle
